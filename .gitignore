@@ -1,0 +1,9 @@
+# python virtual environment
+venv
+
+# python byte file
+*.pyc
+
+# vim swap file
+*.swp
+*~
