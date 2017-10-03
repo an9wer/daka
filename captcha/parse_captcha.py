@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from PIL import Image, ImageEnhance
 
-from config import CAPTCHA_DIR, COMPONENT_DIR, CAPTCHA_COUNT
+from config import SOURCE_DIR, COMPONENT_DIR, CAPTCHA_COUNT
 
 
 max_width = 0
 component_name = ""
 
 for num in xrange(CAPTCHA_COUNT):
-    im = Image.open("%s/%d.gif" % (CAPTCHA_DIR, num))
+    im = Image.open("%s/%d.gif" % (SOURCE_DIR, num))
     print im.format, im.size, im.mode
 
     crop_im = im.crop((0, 0, 50, 25))

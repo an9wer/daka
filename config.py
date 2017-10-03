@@ -2,8 +2,10 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CAPTCHA_DIR = os.path.join(BASE_DIR, "captcha")
-COMPONENT_DIR = os.path.join(BASE_DIR, "component")
-LETTER_DIR = os.path.join(BASE_DIR, "letter")
+
+SOURCE_DIR = os.path.join(CAPTCHA_DIR, "source")
+COMPONENT_DIR = os.path.join(CAPTCHA_DIR, "component")
+LETTER_DIR = os.path.join(CAPTCHA_DIR, "letter")
 
 
 CAPTCHA_COUNT = 10000
