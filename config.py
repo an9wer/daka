@@ -6,6 +6,7 @@ CAPTCHA_DIR = os.path.join(BASE_DIR, "captcha")
 SOURCE_DIR = os.path.join(CAPTCHA_DIR, "source")
 COMPONENT_DIR = os.path.join(CAPTCHA_DIR, "component")
 LETTER_DIR = os.path.join(CAPTCHA_DIR, "letter")
+LETTER_CLS_DIR = os.path.join(CAPTCHA_DIR, "letter_cls")
 
 
 CAPTCHA_COUNT = 10000
