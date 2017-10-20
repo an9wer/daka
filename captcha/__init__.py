@@ -25,8 +25,6 @@ class Captcha(object):
                 self.__template[pic] = letter
 
     def identify(self, path):
-
-        self.result = ""
         #print sys.getsizeof(self.__template)
         im = Image.open(path)
 
