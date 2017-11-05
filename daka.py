@@ -148,7 +148,10 @@ for tr in trs:
     line = ""
     for td in tds[1:]:
         line += "%s  " % (td.string or u"无   ")
-    print line
+    try:
+        print line
+    except UnicodeEncodeError:
+        print line.encode("utf-8")
     print ""
 
 

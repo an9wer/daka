@@ -1,12 +1,16 @@
 # -*- mode: python -*-
 
+# windows
 # pyinstaller --add-data "./captcha/letter_cls;./captcha/letter_cls" --add-data "./captcha/letter;./captcha/letter" daka.py
+
+# *nix
+# pyinstaller --add-data "./captcha/letter_cls:./captcha/letter_cls" --add-data "./captcha/letter:./captcha/letter" daka.py
+
 
 block_cipher = None
 
 
 a = Analysis(['daka.py'],
-             pathex=['D:\\work\\daka'],
              binaries=[],
              datas=[('./captcha/letter_cls', './captcha/letter_cls'), ('./captcha/letter', './captcha/letter')],
              hiddenimports=[],
