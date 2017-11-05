@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import time
+import datetime
 import StringIO
 import requests
 from bs4 import BeautifulSoup
 
-from config import CAPTCHA_URL, LOGIN_URL, DAKA_URL, HEADERS
 from captcha import Captcha
+from utils.getch import getch
+from utils.timedinput import timed_input
+from utils.loading import LoadingAnimation
+from config import (
+    CAPTCHA_URL, LOGIN_URL, DAKA_URL, HEADERS, INPUT_TIMEOUT, DATEDELT)
 
 
 #import os
 #os.system('mode con: cols=100 lines=400')
-#os.system('mode con: cols=100')
+
 
 def record_username_password():
     with open("key", "w") as f:
@@ -25,14 +29,15 @@ def record_username_password():
 
 
 print "What do you want to do?"
-print "1. login to get daka record"
+print "1. detect daka records"
 print "2. change username/password"
+print "Note: you have only %s seconds to make a choice, which is 1 by default." % INPUT_TIMEOUT[1]
 print ""
-
-choice = raw_input("Please enter your choice: ")
-print ""
+print "Please enter your choice (1 or 2): "
 
 while True:
+    print ""
+    choice = timed_input(default="1", timeout=INPUT_TIMEOUT[0])
     if choice == "1":
         try:
             with open("key", "r") as f:
@@ -41,7 +46,7 @@ while True:
                 username = un_line.split()[-1]
                 password = pw_line.split()[-1]
         except IOError as e:
-            print "I guess it must be your first time to login."
+            print "I guess it is your first time to login."
             username, password = record_username_password()
         except Exception as e:
             print "It seems like something was broken up. Let's relogin."
@@ -53,17 +58,16 @@ while True:
         username, password = record_username_password()
         break
     else:
-       choice = raw_input("Sorry, please Enter 1 or 2: ")
+        print "Sorry, please Enter 1 or 2: "
 
 
 def login():
+    captcha = Captcha()
     while True:
         ss = requests.Session()
         rp = ss.get(LOGIN_URL, headers=HEADERS)
 
         soup = BeautifulSoup(rp.text, "html.parser")
-        viewstate = soup.find(id="__VIEWSTATE")
-        eventvalidation = soup.find(id="__EVENTVALIDATION")
 
         login_payload = {
             "__VIEWSTATE": soup.find(id="__VIEWSTATE")["value"],
@@ -79,18 +83,26 @@ def login():
         rp = ss.get(CAPTCHA_URL, headers=HEADERS)
         im = StringIO.StringIO(rp.content)
         im.seek(0)
-        cp = Captcha()
-        if cp.identify(im):
-            login_payload["txtValidateCod"] = cp.identify(im)
+        
+        words = captcha.identify(im)
+        if words:
+            login_payload["txtValidateCod"] = words
             return ss, login_payload
 
 while True:
+    print ""
+    la = LoadingAnimation(message="Start to detect, loading ...")
+    la.start()
+
     ss, login_payload = login()
     rp = ss.post(LOGIN_URL, headers=HEADERS, data=login_payload)
     if rp.url == LOGIN_URL:
-        print "It seems like you enter a wrong username or password."
+        la.end()
+        print "\r\n"
+        print "It seems like your username or password is wrong."
         username, password = record_username_password()
     else:
+        la.end()
         break
 
 
@@ -107,9 +119,9 @@ daka_payload = {
     "__VIEWSTATE": soup.find(id="__VIEWSTATE")["value"],
     "__EVENTVALIDATION": soup.find(id="__EVENTVALIDATION")["value"],
     "ctl00$ContentPlaceHolder_Content$txtStartDate":
-        "2017-09-01",
+        (datetime.datetime.now() - datetime.timedelta(days=DATEDELT)).strftime("%Y-%m-%d"),
     "ctl00$ContentPlaceHolder_Content$txtEndDate":
-        "2017-11-30",
+        datetime.datetime.now().strftime("%Y-%m-%d"),
     "ctl00$ContentPlaceHolder_Content$btnSearch":
         soup.find(id="ctl00_ContentPlaceHolder_Content_btnSearch")["value"],
     "ctl00$ContentPlaceHolder_Content$ddlCenter":
@@ -130,6 +142,7 @@ rp = ss.post(DAKA_URL, headers=HEADERS, data=daka_payload)
 
 soup = BeautifulSoup(rp.text, "html.parser")
 trs = soup.find(id="divContent").find("table").find_all("tr")
+print ""
 for tr in trs:
     tds = tr.find_all("td")
     line = ""
@@ -138,5 +151,7 @@ for tr in trs:
     print line
     print ""
 
+
 print ""
-raw_input("Press any key to exit!\n")
+print "Press any key to exit!\n"
+getch()

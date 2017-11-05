@@ -14,6 +14,10 @@ CAPTCHA_URL = "http://172.16.30.30:80/Admin/validateCode.aspx?"
 LOGIN_URL = "http://172.16.30.30/Admin/files/nav/login.aspx"
 DAKA_URL = "http://172.16.30.30/Ribao/ICCardRecord.aspx"
 
+INPUT_TIMEOUT = (2, "two")
+
+DATEDELT = 30
+
 HEADERS = {
     "user-agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 "
                   "(KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",

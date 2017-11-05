@@ -7,3 +7,6 @@ venv
 # vim swap file
 *.swp
 *~
+
+# key file
+key

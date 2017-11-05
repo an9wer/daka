@@ -1,0 +1,49 @@
+class _Getch(object):
+    """
+    Gets a single character from standard input.  Does not echo to the screen.
+    """
+    def __init__(self):
+        try:
+            import msvcrt
+        except ImportError:
+            self.impl = _GetchUnix()
+        else:
+            self.impl = _GetchWindows()
+        finally:
+            del msvcrt
+
+    def __call__(self):
+        return self.impl()
+
+
+class _GetchUnix(object):
+
+    def __call__(self):
+        """
+        Read a single keypress from stdin and return the resulting character. 
+        Nothing is echoed to the console. This call will block if a keypress 
+        is not already available, but will not wait for Enter to be pressed. 
+
+        If the pressed key was a modifier key, nothing will be detected; if
+        it were a special function key, it may return the first character of
+        of an escape sequence, leaving additional characters in the buffer.
+        """
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
+
+class _GetchWindows(object):
+
+    def __call__(self):
+        import msvcrt
+        return msvcrt.getch()
+
+
+getch = _Getch()
