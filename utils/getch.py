@@ -8,9 +8,8 @@ class _Getch(object):
         except ImportError:
             self.impl = _GetchUnix()
         else:
-            self.impl = _GetchWindows()
-        finally:
             del msvcrt
+            self.impl = _GetchWindows()
 
     def __call__(self):
         return self.impl()

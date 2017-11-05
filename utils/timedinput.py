@@ -16,9 +16,8 @@ class _TimedInput(object):
         except ImportError:
             self.impl = _TimedInputUnix()
         else:
-            self.impl = _TimedInputWindows()
-        finally:
             del msvcrt
+            self.impl = _TimedInputWindows()
 
 
 class _TimedInputUnix(object):
@@ -28,7 +27,7 @@ class _TimedInputUnix(object):
 
     def __call__(self, default=None, timeout=10):
         import signal
-        signal.signal(signal.SIGALRM, alarmHandler)
+        signal.signal(signal.SIGALRM, self.__alarm_handler)
         signal.alarm(timeout)
         try:
             char = getch()
@@ -37,7 +36,7 @@ class _TimedInputUnix(object):
         except Exception:
             pass
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
-        return None
+        return default
 
 
 class _TimedInputWindows(object):

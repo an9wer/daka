@@ -10,6 +10,5 @@ olefile==0.44
 pefile==2017.9.3
 Pillow==4.2.1
 PyInstaller==3.3
-pypiwin32==219
 requests==2.18.4
 urllib3==1.22
