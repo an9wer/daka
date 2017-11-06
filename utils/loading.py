@@ -18,7 +18,7 @@ class LoadingAnimation(object):
             time.sleep(0.1)
 
     def end(self):
-        self.done=True
+        self.done = True
 
     def start(self):
         th = threading.Thread(target=self.__animate)

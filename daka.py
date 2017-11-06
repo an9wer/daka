@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import datetime
 import StringIO
 import requests
@@ -16,6 +17,14 @@ from config import (
 #import os
 #os.system('mode con: cols=100 lines=400')
 
+
+def exit():
+    print "Some errors happen ..."
+    print "Please make sure you are in company network and then detect your network connection."
+    print ""
+    print "Press any key to exit!\n"
+    getch()
+    sys.exit(0)
 
 def record_username_password():
     with open("key", "w") as f:
@@ -94,19 +103,27 @@ while True:
     la = LoadingAnimation(message="Start to detect, loading ...")
     la.start()
 
-    ss, login_payload = login()
-    rp = ss.post(LOGIN_URL, headers=HEADERS, data=login_payload)
+    try:
+        ss, login_payload = login()
+        rp = ss.post(LOGIN_URL, headers=HEADERS, data=login_payload)
+    except requests.exceptions.RequestException:
+        la.end()
+        print "\r\n"
+        exit()
     if rp.url == LOGIN_URL:
         la.end()
         print "\r\n"
         print "It seems like your username or password is wrong."
         username, password = record_username_password()
     else:
-        la.end()
         break
 
-
-rp = ss.get(DAKA_URL, headers=HEADERS)
+try:
+    rp = ss.get(DAKA_URL, headers=HEADERS)
+except requests.exceptions.RequestException:
+    la.end()
+    print "\r\n"
+    exit()
 
 soup = BeautifulSoup(rp.text, "html.parser")
 
@@ -138,10 +155,17 @@ daka_payload = {
             "option", attrs={"selected": "selected"})["value"],
 }
 
-rp = ss.post(DAKA_URL, headers=HEADERS, data=daka_payload)
+try:
+    rp = ss.post(DAKA_URL, headers=HEADERS, data=daka_payload)
+except requests.exceptions.RequestException:
+    la.end()
+    print "\r\n"
+    exit()
 
 soup = BeautifulSoup(rp.text, "html.parser")
 trs = soup.find(id="divContent").find("table").find_all("tr")
+
+la.end()
 print ""
 for tr in trs:
     tds = tr.find_all("td")
