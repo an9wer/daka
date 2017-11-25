@@ -16,7 +16,7 @@
 
 ## Usage
 
--   tow ways to run：
+-   two ways to run：
 
     1.  run directly：
 
