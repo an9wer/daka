@@ -16,12 +16,12 @@
 
 ## Usage
 
--   two ways to run：
+two ways to run：
 
-    1.  run directly：
+1.  run directly：
 
-            python daka.py
+        python daka.py
 
-    2.  generate a executable file to run：
+2.  generate a executable file to run：
 
-            pyinstaller daka.spec
+        pyinstaller daka.spec
