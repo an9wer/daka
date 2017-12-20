@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import getpass
 import datetime
 import StringIO
 import requests
@@ -29,7 +30,7 @@ def exit():
 def record_username_password():
     with open("key", "w") as f:
         username = raw_input("Please enter your username: ")
-        password = raw_input("Please enter your password: ")
+        password = getpass.getpass("Please enter your password: ")
         print ""
         f.write("username %s\n" % username)
         f.write("password %s\n" % password)
@@ -92,7 +93,7 @@ def login():
         rp = ss.get(CAPTCHA_URL, headers=HEADERS)
         im = StringIO.StringIO(rp.content)
         im.seek(0)
-        
+
         words = captcha.identify(im)
         if words:
             login_payload["txtValidateCod"] = words
